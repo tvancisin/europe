@@ -18,20 +18,30 @@
     netherlands: "https://icecast.omroep.nl/3fm-bb-aac",
     czech: "https://rozhlas.stream/radio_wave_low.aac",
     switzerland: "https://stream.srg-ssr.ch/m/drsvirus/aacp_96",
-    italy: "https://radiodueindie-live.akamaized.net/hls/live/2032593/radiodueindie/radiodueindie/radio2indie_256/chunklist.m3u8",
+    italy:
+      "https://radiodueindie-live.akamaized.net/hls/live/2032593/radiodueindie/radiodueindie/radio2indie_256/chunklist.m3u8",
     germany: "https://st03.sslstream.dlf.de/dlf/03/high/aac/stream.aac",
-    denmark: "https://drliveradio.akamaized.net/hls/live/2022411/p6beat/masterab.m3u8",
+    denmark:
+      "https://drliveradio.akamaized.net/hls/live/2022411/p6beat/masterab.m3u8",
     poland: "http://mp3.polskieradio.pl:8904/;",
     hungary: "https://icast.connectmedia.hu/4738/mr2.mp3",
     slovenia: "https://mp3.rtvslo.si/val202",
     norway: "https://lyd.nrk.no/nrk_radio_p13_aac_h",
     sweden: "https://http-live.sr.se/p3-aac-192",
     finland: "https://icecast.live.yle.fi/radio/YleX/icecast.audio",
-    estonia: "https://sb.err.ee/live/raadio2.m3u8"
+    estonia: "https://sb.err.ee/live/raadio2.m3u8",
+    latvia: "https://live.pieci.lv/live19-hq.aac",
+    lithuania: "http://lrt-cast.lrt.lt:8000/lrt_opus",
+    croatia: "https://playerservices.streamtheworld.com/api/livestream-redirect/PROGRAM2AAC.aac",
+    bosnia: "https://pstnet7.shoutcastnet.com:10034/stream"
   };
 
   let width, height;
   let transform = d3.zoomIdentity;
+
+  let imageSize = 25; // Default size for images
+
+  $: imageSize = width < 600 ? 15 : 25; // Adjust size based on screen width
 
   let geojson;
   d3.json("europe.json").then((data) => (geojson = data));
@@ -66,7 +76,10 @@
       selectedCountry = "uk";
     }
     if (selectedCountry == "Czech Republic") {
-      selectedCountry = "czech"
+      selectedCountry = "czech";
+    }
+    if (selectedCountry == "Bosnia and Herzegovina") {
+      selectedCountry = "bosnia"
     }
 
     const streamUrl = streams[selectedCountry.toLowerCase()];
@@ -143,20 +156,38 @@
         {#each countries as country}
           <path
             fill="#1B1A1B"
-            stroke="#333333"
-            stroke-width="0.5"
+            stroke="gray"
+            stroke-width="0.2"
             d={country.path}
+            role="button"
+            aria-label={`Select ${country.properties.NAME}`}
+            tabindex="0"
             on:click={() => handleClick(country)}
             on:mouseenter={handleMouseEnter}
             on:mouseleave={handleMouseLeave}
+            on:keydown={(event) => {
+              if (event.key === "Enter" || event.key === " ") {
+                handleClick(country);
+                event.preventDefault(); // Prevent default scrolling for space
+              }
+            }}
           ></path>
           <image
             on:click={() => handleClick(country)}
+            on:keydown={(event) => {
+              if (event.key === "Enter" || event.key === " ") {
+                handleClick(country);
+                event.preventDefault(); // Prevent scrolling with Space
+              }
+            }}
             href={country.properties.radio}
-            x={country.centroid[0] - 10}
-            y={country.centroid[1] - 10}
-            height="25"
-          ></image>
+            x={country.centroid[0] - imageSize / 2}
+            y={country.centroid[1] - imageSize / 2}
+            height={imageSize}
+            role="button"
+            tabindex="0"
+            aria-label={`Play radio for ${country.properties.NAME}`}
+          />
         {/each}
       </g>
     </svg>
@@ -174,5 +205,10 @@
     position: absolute;
     right: 5px;
     top: 5px;
+  }
+  /* Remove focus outline for mouse users */
+  path:focus,
+  image:focus {
+    outline: none;
   }
 </style>
