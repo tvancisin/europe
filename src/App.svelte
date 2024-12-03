@@ -21,7 +21,13 @@
     italy: "https://radiodueindie-live.akamaized.net/hls/live/2032593/radiodueindie/radiodueindie/radio2indie_256/chunklist.m3u8",
     germany: "https://st03.sslstream.dlf.de/dlf/03/high/aac/stream.aac",
     denmark: "https://drliveradio.akamaized.net/hls/live/2022411/p6beat/masterab.m3u8",
-    poland: "http://mp3.polskieradio.pl:8954/;"
+    poland: "http://mp3.polskieradio.pl:8904/;",
+    hungary: "https://icast.connectmedia.hu/4738/mr2.mp3",
+    slovenia: "https://mp3.rtvslo.si/val202",
+    norway: "https://lyd.nrk.no/nrk_radio_p13_aac_h",
+    sweden: "https://http-live.sr.se/p3-aac-192",
+    finland: "https://icecast.live.yle.fi/radio/YleX/icecast.audio",
+    estonia: "https://sb.err.ee/live/raadio2.m3u8"
   };
 
   let width, height;
@@ -149,7 +155,7 @@
             href={country.properties.radio}
             x={country.centroid[0] - 10}
             y={country.centroid[1] - 10}
-            height="30"
+            height="25"
           ></image>
         {/each}
       </g>
